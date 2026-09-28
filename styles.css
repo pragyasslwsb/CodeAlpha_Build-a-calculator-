@@ -1,0 +1,574 @@
+/* Keeps element sizing predictable across the whole interface. */
+* { box-sizing: border-box; }
+
+/* Defines the warm paper, ink, and citrus color system. */
+:root {
+  color-scheme: light;
+  --paper: #f2f0e8;
+  --ink: #25312c;
+  --muted: #85887e;
+  --line: #e1ded4;
+  --lime: #dce6b5;
+  --coral: #d9785e;
+  --panel: #fffefa;
+  --font: "Trebuchet MS", "Segoe UI", sans-serif;
+  --display-font: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+}
+
+/* Sets the page base and prevents accidental horizontal scrolling. */
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  transition: color .24s ease, background-color .24s ease;
+}
+
+/* Adds a faint, non-interactive drafting grid to the background. */
+.page-texture {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .26;
+  background-image: linear-gradient(#d6d5ca 1px, transparent 1px), linear-gradient(90deg, #d6d5ca 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+/* Constrains the working area while leaving generous breathing room. */
+.app-shell {
+  position: relative;
+  width: calc(100% - 80px);
+  max-width: 1100px;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 448px);
+  grid-template-rows: 86px minmax(0, 1fr) 60px;
+  column-gap: clamp(36px, 7vw, 82px);
+}
+
+/* Aligns the brand and view navigation along one quiet top rail. */
+.topbar {
+  height: 86px;
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(32 35 30 / 10%);
+}
+
+/* Gives the wordmark a sturdy, compact presence. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+
+/* Highlights the summation mark with a small lime tile. */
+.brand-mark {
+  width: 29px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--lime);
+  font-size: 19px;
+  font-weight: 700;
+}
+
+/* Adds a tiny coral punctuation accent to the logo. */
+.brand-period { color: var(--coral); }
+
+/* Keeps navigation and appearance controls grouped in the top rail. */
+.topbar-actions { display: flex; align-items: center; gap: 9px; }
+
+/* Makes the theme control feel like a small, quiet utility button. */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e4e2d9;
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgb(255 254 250 / 72%);
+  font: inherit;
+  font-size: 19px;
+  cursor: pointer;
+  transition: transform .18s ease, color .2s ease, background .2s ease, border-color .2s ease;
+}
+
+/* Gives the theme button a small lift on pointer hover. */
+.theme-toggle:hover { transform: translateY(-2px); border-color: #c9c7bc; }
+
+/* Arranges the two page destinations as a small segmented control. */
+.view-nav {
+  display: flex;
+  padding: 4px;
+  gap: 3px;
+  border: 1px solid #e4e2d9;
+  border-radius: 9px;
+  background: rgb(255 254 250 / 72%);
+}
+
+/* Styles navigation controls as clear, touch-friendly text buttons. */
+.nav-button {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 6px;
+  color: #74766e;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color .18s ease, background .18s ease, transform .18s ease;
+}
+
+/* Marks the current view with strong contrast. */
+.nav-button.is-active { color: var(--ink); background: var(--lime); }
+
+/* Gives the history count a compact tabular shape. */
+.history-count {
+  min-width: 17px;
+  height: 17px;
+  margin-left: 3px;
+  padding: 0 4px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 5px;
+  color: #73756d;
+  background: rgb(32 35 30 / 7%);
+  font-size: 10px;
+}
+
+/* Places the calculator beside the editorial introduction on wide screens. */
+.workspace {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Gives the app a human-scale introduction instead of a generic dashboard header. */
+.intro {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: center;
+  padding: 36px 0 46px;
+}
+
+/* Adds a small, precise eyebrow above the headline. */
+.intro-kicker {
+  width: fit-content;
+  min-height: 29px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 25px;
+  border: 1px solid #e1ded4;
+  border-radius: 5px;
+  color: #787c71;
+  background: rgb(255 254 250 / 55%);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+/* Repeats the app's small mark as a restrained section detail. */
+.intro-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--coral);
+  transform: rotate(45deg);
+}
+
+/* Uses a literary serif headline to offset the functional keypad typography. */
+.intro h1 {
+  max-width: 570px;
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: 56px;
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: 0;
+}
+
+/* Adds a loose pencil-like underline to one phrase in the headline. */
+.headline-accent {
+  text-decoration: underline;
+  text-decoration-color: rgb(217 120 94 / 65%);
+  text-decoration-style: wavy;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 7px;
+}
+
+/* Keeps the supporting line calm and comfortably readable. */
+.intro-copy {
+  max-width: 340px;
+  margin: 22px 0 0;
+  color: #70766e;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* Creates a small typographic detail that gives the left column its own rhythm. */
+.intro-note {
+  width: min(100%, 340px);
+  margin-top: 62px;
+  padding: 13px 0 0 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 8px 16px;
+  border-top: 1px solid #d9d7cc;
+  border-left: 2px solid var(--coral);
+}
+
+/* Styles the equation note as a marginal annotation. */
+.note-label { color: #898b82; font-size: 10px; font-weight: 700; }
+.note-equation { grid-column: 2; grid-row: 1 / span 2; font-family: var(--display-font); font-size: 28px; }
+.note-equation i { color: var(--coral); font-style: normal; font-size: 21px; }
+.note-caption { color: #898b82; font-size: 11px; }
+
+/* Defines the calculator's content column and entrance motion. */
+.calculator-view {
+  width: 100%;
+  margin: auto 0;
+  padding: 22px;
+  border: 1px solid rgb(255 255 255 / 85%);
+  border-radius: 14px;
+  background: rgb(255 254 250 / 83%);
+  box-shadow: 0 18px 50px rgb(39 45 35 / 7%), 0 2px 5px rgb(39 45 35 / 3%);
+  animation: rise-in .38s ease both;
+}
+
+/* Presents the display as a dark instrument panel. */
+.calculator-display {
+  min-height: 174px;
+  margin-bottom: 14px;
+  padding: 22px 24px 19px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-radius: 12px;
+  color: #f7f7ed;
+  background: var(--ink);
+  box-shadow: 0 10px 26px rgb(32 35 30 / 10%);
+  overflow: hidden;
+}
+
+/* Labels the calculator mode using small, spaced utility text. */
+.display-label {
+  margin: 0;
+  color: #9da095;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+/* Shows the pending expression with space for long inputs. */
+.expression {
+  width: 100%;
+  margin: 10px 0 0;
+  color: #b4b6aa;
+  font-size: 13px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* Gives the current value clear visual priority. */
+.result {
+  max-width: 100%;
+  margin-top: 4px;
+  color: #fffefa;
+  font-family: var(--display-font);
+  font-size: 54px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* Creates a four-column keypad with stable button dimensions. */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+}
+
+/* Sets consistent size, typography, and transition for every key. */
+.key {
+  min-width: 0;
+  aspect-ratio: 1.32 / 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e6e4dc;
+  border-radius: 9px;
+  color: var(--ink);
+  background: var(--panel);
+  box-shadow: 0 2px 0 rgb(32 35 30 / 4%);
+  font: inherit;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .14s ease, box-shadow .14s ease, background .14s ease, border-color .14s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Uses a subtle pressed state that feels crisp on mouse and touch. */
+.key:hover { transform: translateY(-2px); border-color: #cfcec3; box-shadow: 0 5px 10px rgb(32 35 30 / 8%); }
+.key:active { transform: translateY(1px) scale(.98); box-shadow: none; }
+
+/* Differentiates utility keys from number keys without hiding their labels. */
+.key-utility { color: #6c6f66; background: #eeede6; border-color: #eeede6; font-size: 15px; }
+
+/* Calls attention to arithmetic operators using a restrained coral tint. */
+.key-operator { color: #a84731; background: #f9e9e2; border-color: #f9e9e2; font-size: 21px; }
+
+/* Makes equals the brightest, easiest-to-find action on the keypad. */
+.key-equals { border-color: var(--lime); background: var(--lime); font-size: 23px; }
+
+/* Keeps the backspace key visually distinct but still secondary. */
+.key-delete { font-size: 21px; }
+
+/* Shows keyboard guidance as a quiet line under the keypad. */
+.keyboard-hint {
+  margin: 17px 0 0;
+  color: #85877e;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* Draws small keycaps around the keyboard shortcut symbols. */
+.keycap {
+  padding: 2px 5px;
+  border: 1px solid #dfddd4;
+  border-radius: 4px;
+  color: #5f6259;
+  background: #eeece4;
+  font-family: var(--font);
+  font-size: 10px;
+}
+
+/* Separates the two shortcut hints with a muted center dot. */
+.hint-divider { padding: 0 7px; color: #bbb9ae; }
+
+/* Makes the history view feel related to the calculator, not like a new page. */
+.history-view {
+  width: 100%;
+  margin: auto 0;
+  padding: 28px 26px;
+  border: 1px solid rgb(255 255 255 / 85%);
+  border-radius: 14px;
+  background: rgb(255 254 250 / 83%);
+  box-shadow: 0 18px 50px rgb(39 45 35 / 7%), 0 2px 5px rgb(39 45 35 / 3%);
+  animation: rise-in .38s ease both;
+}
+
+/* Places the history heading and clear action on a single flexible row. */
+.history-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 19px; }
+
+/* Keeps the history heading compact and readable. */
+.history-heading h1 { margin: 8px 0 0; font-size: 23px; font-weight: 700; letter-spacing: 0; }
+
+/* Styles the history reset as a low-emphasis text action. */
+.clear-history {
+  min-height: 34px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 6px;
+  color: #77796f;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color .18s ease, background .18s ease;
+}
+
+/* Adds a light coral hover cue to the destructive history action. */
+.clear-history:hover { color: #a84731; background: #f9e9e2; }
+
+/* Gives history rows a clear list rhythm with fine separators. */
+.history-list { border-top: 1px solid var(--line); }
+
+/* Makes each saved calculation a full-width, reusable result button. */
+.history-item {
+  width: 100%;
+  min-height: 73px;
+  padding: 12px 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: padding .18s ease, background .18s ease;
+}
+
+/* Slightly shifts history content on hover to show it is interactive. */
+.history-item:hover { padding-right: 9px; padding-left: 9px; background: rgb(255 254 250 / 65%); }
+
+/* Stacks each expression with its small timestamp. */
+.history-details { min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.history-expression { color: #74766e; font-size: 12px; overflow-wrap: anywhere; }
+.history-time { color: #a2a399; font-size: 10px; }
+
+/* Keeps the saved answer aligned and easy to scan. */
+.history-answer { flex: 0 0 auto; font-size: 19px; font-weight: 700; }
+
+/* Centers a helpful empty state when there are no saved calculations. */
+.history-empty { padding: 38px 12px; color: #85877e; font-size: 13px; text-align: center; }
+
+/* Aligns the app's small footer beneath either view. */
+.app-footer {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  min-height: 53px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-top: 1px solid rgb(32 35 30 / 10%);
+  color: #8a8c82;
+  font-size: 10px;
+}
+
+/* Adds a tiny lime separator echoing the equals key. */
+.footer-dot { width: 4px; height: 4px; border-radius: 50%; background: #9bb93c; }
+
+/* Defines the short, shared entrance animation for view changes. */
+@keyframes rise-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Keeps visible keyboard focus accessible without changing normal states. */
+button:focus-visible, a:focus-visible { outline: 3px solid #71a34a; outline-offset: 3px; }
+
+/* Reduces motion for visitors who ask the operating system to limit it. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* Tightens spacing and key proportions on small mobile screens. */
+@media (max-width: 420px) {
+  .app-shell { width: calc(100% - 32px); max-width: 448px; }
+  .topbar { height: 72px; }
+  .calculator-view { padding: 15px; }
+  .calculator-display { min-height: 148px; padding: 19px 18px 17px; }
+  .keypad { gap: 7px; }
+  .key { aspect-ratio: 1.18 / 1; border-radius: 8px; }
+  .history-heading h1 { font-size: 20px; }
+}
+
+/* Stacks the introduction and calculator before the phone layout gets cramped. */
+@media (max-width: 760px) {
+  .app-shell {
+    width: calc(100% - 48px);
+    max-width: 500px;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar { flex: 0 0 76px; }
+  .intro { padding: 34px 0 15px; }
+  .intro-kicker { margin-bottom: 15px; }
+  .intro h1 { font-size: 42px; }
+  .intro-copy { max-width: 380px; margin-top: 13px; font-size: 14px; }
+  .intro-note { margin-top: 22px; padding-top: 12px; }
+  .workspace { flex: 1; justify-content: flex-start; }
+  .calculator-view { margin: 0 0 22px; }
+  .history-view { margin: 0 0 22px; }
+  .app-footer { flex: 0 0 53px; }
+}
+
+/* Gives tablets a slightly tighter desktop composition without squeezing the keypad. */
+@media (min-width: 761px) and (max-width: 920px) {
+  .app-shell { width: calc(100% - 56px); max-width: 860px; grid-template-columns: minmax(0, 1fr) minmax(360px, 420px); column-gap: 32px; }
+  .intro h1 { font-size: 46px; }
+  .intro-note { margin-top: 40px; }
+  .calculator-view { padding: 17px; }
+  .keypad { gap: 7px; }
+}
+
+/* Gives the keypad more of the first phone screen by shortening the introduction. */
+@media (max-width: 420px) {
+  .intro { padding-top: 26px; }
+  .intro h1 { font-size: 38px; }
+  .intro-note { display: none; }
+  .topbar-actions { gap: 6px; }
+  .theme-toggle { width: 36px; height: 36px; }
+}
+
+/* Recolors the existing surfaces for a softer low-light theme. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #202923;
+  --ink: #eef0e7;
+  --muted: #abb4a8;
+  --line: #414d44;
+  --lime: #bfd58a;
+  --coral: #e99478;
+  --panel: #303b34;
+}
+
+/* Keeps secondary text and outlines legible against the dark paper. */
+:root[data-theme="dark"] .page-texture { opacity: .16; background-image: linear-gradient(#536057 1px, transparent 1px), linear-gradient(90deg, #536057 1px, transparent 1px); }
+:root[data-theme="dark"] .topbar,
+:root[data-theme="dark"] .app-footer { border-color: rgb(238 240 231 / 12%); }
+:root[data-theme="dark"] .view-nav,
+:root[data-theme="dark"] .theme-toggle,
+:root[data-theme="dark"] .intro-kicker { border-color: #46534a; background: #29352e; }
+:root[data-theme="dark"] .nav-button,
+:root[data-theme="dark"] .theme-toggle { color: #c0c7ba; }
+:root[data-theme="dark"] .nav-button.is-active { color: #202923; background: var(--lime); }
+:root[data-theme="dark"] .history-count { color: #c0c7ba; background: rgb(238 240 231 / 10%); }
+:root[data-theme="dark"] .intro-kicker,
+:root[data-theme="dark"] .intro-copy,
+:root[data-theme="dark"] .note-label,
+:root[data-theme="dark"] .note-caption,
+:root[data-theme="dark"] .history-expression,
+:root[data-theme="dark"] .history-time,
+:root[data-theme="dark"] .history-empty,
+:root[data-theme="dark"] .keyboard-hint,
+:root[data-theme="dark"] .app-footer { color: #aab3a7; }
+:root[data-theme="dark"] .intro-note { border-color: #46534a; }
+:root[data-theme="dark"] .calculator-view,
+:root[data-theme="dark"] .history-view { border-color: rgb(238 240 231 / 8%); background: rgb(43 54 47 / 92%); box-shadow: 0 18px 50px rgb(0 0 0 / 20%), 0 2px 5px rgb(0 0 0 / 10%); }
+:root[data-theme="dark"] .calculator-display { color: #f4f2e9; background: #131c17; }
+:root[data-theme="dark"] .key { border-color: #46534a; color: #eef0e7; background: #303b34; box-shadow: 0 2px 0 rgb(0 0 0 / 16%); }
+:root[data-theme="dark"] .key:hover { border-color: #657365; box-shadow: 0 5px 10px rgb(0 0 0 / 24%); }
+:root[data-theme="dark"] .key-utility { border-color: #3b473f; color: #d2d8ca; background: #3b473f; }
+:root[data-theme="dark"] .key-operator { border-color: #49372f; color: #f1a18a; background: #49372f; }
+:root[data-theme="dark"] .key-equals { border-color: var(--lime); color: #202923; background: var(--lime); }
+:root[data-theme="dark"] .keycap { border-color: #46534a; color: #d2d8ca; background: #303b34; }
+:root[data-theme="dark"] .hint-divider { color: #657064; }
+:root[data-theme="dark"] .history-list { border-color: var(--line); }
+:root[data-theme="dark"] .history-item { border-color: var(--line); color: var(--ink); }
+:root[data-theme="dark"] .history-item:hover { background: rgb(238 240 231 / 5%); }
+:root[data-theme="dark"] .clear-history { color: #b8c0b3; }
+:root[data-theme="dark"] .clear-history:hover { color: #f1a18a; background: #49372f; }
+:root[data-theme="dark"] button:focus-visible,
+:root[data-theme="dark"] a:focus-visible { outline-color: #c8df8a; }

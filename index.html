@@ -1,0 +1,113 @@
+<!doctype html>
+<!-- Declares an accessible, standards-mode HTML document. -->
+<html lang="en">
+<!-- Provides language metadata for browsers and assistive technology. -->
+<head>
+  <!-- Sets the character encoding used by the page. -->
+  <meta charset="UTF-8">
+  <!-- Keeps the layout correctly scaled on phones and tablets. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Describes the calculator in browser tabs and search previews. -->
+  <meta name="description" content="A clean, responsive calculator with keyboard support and calculation history.">
+  <!-- Names the page shown in the browser tab. -->
+  <title>Count — Calculator</title>
+  <!-- Loads the separate stylesheet for the calculator interface. -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<!-- Starts the visible page content. -->
+<body>
+  <!-- Adds a subtle decorative grid behind the app without blocking controls. -->
+  <div class="page-texture" aria-hidden="true"></div>
+  <!-- Centers the calculator and its small page footer. -->
+  <main class="app-shell">
+    <!-- Contains the product identity and the view navigation. -->
+    <header class="topbar">
+      <!-- Uses a compact mark and wordmark as the app identity. -->
+      <a class="brand" href="#calculator" aria-label="Count calculator home">
+        <span class="brand-mark" aria-hidden="true">∑</span>
+        <span>count<span class="brand-period">.</span></span>
+      </a>
+      <!-- Groups the view navigation with the saved appearance control. -->
+      <div class="topbar-actions">
+        <!-- Switches between the calculator and saved calculation views. -->
+        <nav class="view-nav" aria-label="Calculator views">
+          <button class="nav-button is-active" type="button" data-view="calculator" aria-current="page">Calculator</button>
+          <button class="nav-button" type="button" data-view="history">History <span class="history-count" id="history-count">0</span></button>
+        </nav>
+        <!-- Lets users choose a color theme that remains selected on their next visit. -->
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">
+          <span id="theme-icon" aria-hidden="true">☾</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Gives the calculator a quiet editorial identity beside the working tool. -->
+    <section class="intro" aria-label="About Count">
+      <p class="intro-kicker"><span class="intro-mark" aria-hidden="true"></span> CODEALPHA · STUDENT PROJECT</p>
+      <h1>Numbers,<br><span class="headline-accent">with room to breathe.</span></h1>
+      <p class="intro-copy">A small calculator for quick sums, kitchen-table maths, and the little things you want to get right.</p>
+      <div class="intro-note" aria-hidden="true">
+        <span class="note-label">A familiar constant</span>
+        <span class="note-equation">12 <i>×</i> 12 <i>=</i> 144</span>
+        <span class="note-caption">A dozen dozens. Still a good number.</span>
+      </div>
+    </section>
+
+    <!-- Holds both views so JavaScript can navigate without reloading the page. -->
+    <section class="workspace" aria-live="polite">
+      <!-- Shows the primary calculator interface. -->
+      <section class="view-panel calculator-view is-visible" id="calculator-view" aria-label="Calculator">
+        <!-- Displays the current expression and result. -->
+        <div class="calculator-display" aria-label="Calculator display">
+          <p class="display-label">STANDARD</p>
+          <p class="expression" id="expression" aria-live="polite">Ready when you are</p>
+          <output class="result" id="result" aria-label="Current value">0</output>
+        </div>
+        <!-- Groups calculator keys into a consistent, responsive keypad. -->
+        <div class="keypad" role="group" aria-label="Calculator keys">
+          <button class="key key-utility" type="button" data-action="clear" aria-label="Clear all">AC</button>
+          <button class="key key-utility" type="button" data-action="sign" aria-label="Change sign">+/−</button>
+          <button class="key key-utility" type="button" data-action="percent" aria-label="Convert to percent">%</button>
+          <button class="key key-operator" type="button" data-operator="/" aria-label="Divide">÷</button>
+          <button class="key" type="button" data-digit="7">7</button>
+          <button class="key" type="button" data-digit="8">8</button>
+          <button class="key" type="button" data-digit="9">9</button>
+          <button class="key key-operator" type="button" data-operator="*" aria-label="Multiply">×</button>
+          <button class="key" type="button" data-digit="4">4</button>
+          <button class="key" type="button" data-digit="5">5</button>
+          <button class="key" type="button" data-digit="6">6</button>
+          <button class="key key-operator" type="button" data-operator="-" aria-label="Subtract">−</button>
+          <button class="key" type="button" data-digit="1">1</button>
+          <button class="key" type="button" data-digit="2">2</button>
+          <button class="key" type="button" data-digit="3">3</button>
+          <button class="key key-operator" type="button" data-operator="+" aria-label="Add">+</button>
+          <button class="key key-utility key-delete" type="button" data-action="delete" aria-label="Delete last digit">⌫</button>
+          <button class="key" type="button" data-digit="0">0</button>
+          <button class="key" type="button" data-action="decimal" aria-label="Decimal point">.</button>
+          <button class="key key-equals" type="button" data-action="equals" aria-label="Equals">=</button>
+        </div>
+        <!-- Offers a gentle hint without taking space from the main controls. -->
+        <p class="keyboard-hint"><span class="keycap">↵</span> to calculate <span class="hint-divider">·</span> <span class="keycap">⌫</span> to delete</p>
+      </section>
+
+      <!-- Lists previous calculations when the History navigation is selected. -->
+      <section class="view-panel history-view" id="history-view" aria-label="Calculation history" hidden>
+        <!-- Gives the history view a clear heading and a one-tap reset. -->
+        <div class="history-heading">
+          <div>
+            <p class="display-label">YOUR WORK</p>
+            <h1>Recent calculations</h1>
+          </div>
+          <button class="clear-history" id="clear-history" type="button">Clear history</button>
+        </div>
+        <!-- Receives accessible history rows generated by JavaScript. -->
+        <div class="history-list" id="history-list" aria-live="polite"></div>
+      </section>
+    </section>
+    <!-- Keeps the footer understated and useful on small screens. -->
+    <footer class="app-footer"><span>Built as a CodeAlpha internship project</span><span class="footer-dot" aria-hidden="true"></span><span>HTML · CSS · JavaScript</span></footer>
+  </main>
+  <!-- Loads calculator behavior after the page elements are available. -->
+  <script src="script.js"></script>
+</body>
+</html>
